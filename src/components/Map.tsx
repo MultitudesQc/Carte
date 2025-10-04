@@ -49,7 +49,7 @@ export default function Map() {
 
   async function fetchMapData() {
     const response = await fetch(apiUrl);
-    const { map: { data }, stale } = await response.json();
+    const {map: {data}} = await response.json();
     setMarkers(data);
   }
 
