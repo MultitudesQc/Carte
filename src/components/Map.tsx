@@ -73,7 +73,7 @@ export default function Map() {
         acc.push(
           <Marker key={`marker-${id}`} position={[lat, lon]}>
             <Popup>
-              <h3>{eventName}</h3>
+              <h3 className='font-bold'>{eventName}</h3>
               <p>{dateAssemblee}</p>
               <p>Organisation: {name}</p>
               <p>Places restantes: {placesRestantes}</p>
