@@ -6,8 +6,6 @@ import { useMap } from 'react-leaflet/hooks'
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
 
-console.log(apiUrl)
-
 const MapContainer = dynamic(
   () => import("react-leaflet").then((mod) => mod.MapContainer),
   { ssr: false }
