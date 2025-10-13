@@ -3,6 +3,7 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { useMap } from 'react-leaflet/hooks'
+import EventPopup from "./EventPopup"
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
 
@@ -31,6 +32,7 @@ export type MultitudesEvent = {
     Date: string
     "Type d'événement": string
     "Hôte·sse": string[]
+    "Participant·es": string[]
     "Nombre de places pour le public ": number
     "Date de l'Assemblée": string
     Courriel: string
@@ -40,6 +42,13 @@ export type MultitudesEvent = {
     "Nombre de participant·es": number
     "Places restantes": number
     Praxis: boolean
+    "En quelques mots, qu'est-ce qui vous motive à organiser une assemblée de cuisine?": string
+    "Avez-vous déjà organisé ou participé à une assemblée de cuisine de Multitudes?": string
+    "Description action": string
+    "Action publique": boolean
+    "Municipalité": string
+    "Lien vers l'événement": string
+    "Billeteries": string
   }
   coordinates: [lat: number, lon: number]
 }
@@ -60,8 +69,12 @@ export default function Map() {
   const placemarks = markers.reduce<React.ReactNode[]>((acc, { id, fields: {
     "Nom de l'événement": eventName,
     "Date de l'Assemblée": dateAssemblee,
-    "Prénom Nom": name,
-    "Places restantes": placesRestantes
+    "Places restantes": placesRestantes,
+    "Municipalité": municipalite,
+    "Description action": description,
+    "Action publique": isPublic,
+    "Lien vers l'événement": link,
+    "Billeteries": billeterie,
   }, coordinates }) => {
     if (coordinates) {
       const [lat, lon] = coordinates
@@ -73,10 +86,16 @@ export default function Map() {
         acc.push(
           <Marker key={`marker-${id}`} position={[lat, lon]}>
             <Popup>
-              <h3 className='font-bold'>{eventName}</h3>
-              <p>{dateAssemblee}</p>
-              <p>Organisation: {name}</p>
-              <p>Places restantes: {placesRestantes}</p>
+              <EventPopup
+                eventName={eventName}
+                dateAssemblee={dateAssemblee}
+                municipalite={municipalite}
+                description={description}
+                isPublic={isPublic}
+                link={link}
+                billeterie={billeterie}
+                placesRestantes={placesRestantes}
+              />
             </Popup>
           </Marker>
         )
