@@ -3,7 +3,16 @@
 import { useState } from "react";
 import dynamic from "next/dynamic";
 import { useMap } from 'react-leaflet/hooks'
-import EventPopup from "./EventPopup"
+
+import {CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card"
+import {Badge} from "@/components/ui/badge"
+import {ButtonGroup} from "@/components/ui/button-group"
+import {Button} from "@/components/ui/button"
+import {Item, ItemContent, ItemTitle, ItemMedia} from "@/components/ui/item"
+import {MapPinIcon} from '@/components/ui/icons/lucide-map-pin'
+
+import strings from "@/strings.json"
+import config from "@/config.json"
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
 
@@ -26,24 +35,13 @@ const Popup = dynamic(
 
 export type MultitudesEvent = {
   id: string
-  createdTime: string
   fields: {
     "Nom de l'événement": string
-    Date: string
     "Type d'événement": string
-    "Hôte·sse": string[]
-    "Participant·es": string[]
     "Nombre de places pour le public ": number
     "Date de l'Assemblée": string
-    Courriel: string
-    "Code postal": string
-    "Prénom Nom": string
-    "Courriel de confirmation": string
-    "Nombre de participant·es": number
+    CourrielFourni: string
     "Places restantes": number
-    Praxis: boolean
-    "En quelques mots, qu'est-ce qui vous motive à organiser une assemblée de cuisine?": string
-    "Avez-vous déjà organisé ou participé à une assemblée de cuisine de Multitudes?": string
     "Description action": string
     "Action publique": boolean
     "Municipalité": string
@@ -66,14 +64,19 @@ export default function Map() {
   let maxLat = -Infinity
   let minLon = Infinity
   let maxLon = -Infinity
+
+  const now = new Date()
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
   const placemarks = markers.reduce<React.ReactNode[]>((acc, { id, fields: {
     "Nom de l'événement": eventName,
+    "Type d'événement": eventType,
     "Date de l'Assemblée": dateAssemblee,
+    "CourrielFourni": courrielFourni,
     "Places restantes": placesRestantes,
     "Municipalité": municipalite,
     "Description action": description,
-    "Action publique": isPublic,
-    "Lien vers l'événement": link,
+    "Action publique": actionPublique,
+    "Lien vers l'événement": lien,
     "Billeteries": billeterie,
   }, coordinates }) => {
     if (coordinates) {
@@ -83,19 +86,48 @@ export default function Map() {
         maxLat = Math.max(maxLat, lat)
         minLon = Math.min(minLon, lon)
         maxLon = Math.max(maxLon, lon)
+        const eventDate = new Date(dateAssemblee)
+        const upcoming = eventDate >= today
         acc.push(
           <Marker key={`marker-${id}`} position={[lat, lon]}>
             <Popup>
-              <EventPopup
-                eventName={eventName}
-                dateAssemblee={dateAssemblee}
-                municipalite={municipalite}
-                description={description}
-                isPublic={isPublic}
-                link={link}
-                billeterie={billeterie}
-                placesRestantes={placesRestantes}
-              />
+              <CardHeader className="p-0">
+                {eventName && <CardTitle className='font-bold'>{eventName}</CardTitle>}
+                {dateAssemblee && <p className='text-sm text-muted-foreground'>{dateAssemblee}</p>}
+                <Badge>{actionPublique ? strings.evenementPublique : strings.evenementPrive}</Badge>
+              </CardHeader>
+              <CardContent className="p-0">
+                {description && <CardDescription className='text-accent-foreground'>{description}</CardDescription>}
+                {upcoming && <p className='text-sm text-muted-foreground'>{strings.nbPlaces}: {placesRestantes}</p>}
+                {municipalite && (
+                  <Item>
+                    <ItemMedia>
+                      <MapPinIcon />
+                    </ItemMedia>
+                    <ItemContent>
+                      <ItemTitle>{municipalite}</ItemTitle>
+                    </ItemContent>
+                  </Item>
+                )}
+              </CardContent>
+              <CardFooter className="p-0">
+                {(lien || billeterie || courrielFourni) && (
+                  <ButtonGroup orientation="vertical">
+                    {lien && <Button asChild className="text-primary-foreground!">
+                      <a href={lien}>{strings.lienEvenement}</a>
+                    </Button>}
+                    {billeterie && <Button asChild className="text-primary-foreground!">
+                      <a href={billeterie}>{strings.billetterie}</a>
+                    </Button>}
+                    {actionPublique && courrielFourni && <Button asChild className="text-primary-foreground!">
+                      <a href="https://airtable.com/appi9w1LESftOH4Lq/pagXpHGhPbYXIe6tK/form">{strings.contact}</a>
+                    </Button>}
+                    {eventType === "Assemblée de cuisine" && upcoming && <Button asChild className="text-primary-foreground!">
+                      <a href="https://airtable.com/appi9w1LESftOH4Lq/pagmssydtpmpwV5hR/form">{strings.inscription}</a>
+                    </Button>}
+                  </ButtonGroup>
+                )}
+              </CardFooter>
             </Popup>
           </Marker>
         )
@@ -107,8 +139,8 @@ export default function Map() {
   return (
     <div style={{ height: "500px", width: "100%" }}>
       <MapContainer
-        center={[46.7, -71.4]}
-        zoom={2}
+        center={config.initialMap.center as [number, number]}
+        zoom={config.initialMap.zoom}
         style={{ height: "100%", width: "100%" }}
         whenReady={async () => {
           await patchMarkerIcons()
