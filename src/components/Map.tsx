@@ -12,7 +12,7 @@ import {Item, ItemContent, ItemTitle, ItemMedia} from "@/components/ui/item"
 import {MapPinIcon} from '@/components/ui/icons/lucide-map-pin'
 
 import strings from "@/strings.json"
-import config from "@/config.json"
+import {initialMap, contactFormUrl, inscriptionFormUrl} from "@/config.json"
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
 
@@ -114,16 +114,16 @@ export default function Map() {
                 {(lien || billeterie || courrielFourni) && (
                   <ButtonGroup orientation="vertical">
                     {lien && <Button asChild className="text-primary-foreground!">
-                      <a href={lien}>{strings.lienEvenement}</a>
+                      <a href={lien} target="_blank">{strings.lienEvenement}</a>
                     </Button>}
                     {billeterie && <Button asChild className="text-primary-foreground!">
-                      <a href={billeterie}>{strings.billetterie}</a>
+                      <a href={billeterie} target="_blank">{strings.billetterie}</a>
                     </Button>}
                     {actionPublique && courrielFourni && <Button asChild className="text-primary-foreground!">
-                      <a href="https://airtable.com/appi9w1LESftOH4Lq/pagXpHGhPbYXIe6tK/form">{strings.contact}</a>
+                      <a href={contactFormUrl} target="_blank">{strings.contact}</a>
                     </Button>}
                     {eventType === "Assemblée de cuisine" && upcoming && <Button asChild className="text-primary-foreground!">
-                      <a href="https://airtable.com/appi9w1LESftOH4Lq/pagmssydtpmpwV5hR/form">{strings.inscription}</a>
+                      <a href={inscriptionFormUrl} target="_blank">{strings.inscription}</a>
                     </Button>}
                   </ButtonGroup>
                 )}
@@ -137,10 +137,10 @@ export default function Map() {
   }, [])
 
   return (
-    <div style={{ height: "500px", width: "100%" }}>
+    <div style={{height: "100vh", width: "100%"}}>
       <MapContainer
-        center={config.initialMap.center as [number, number]}
-        zoom={config.initialMap.zoom}
+        center={initialMap.center as [number, number]}
+        zoom={initialMap.zoom}
         style={{ height: "100%", width: "100%" }}
         whenReady={async () => {
           await patchMarkerIcons()

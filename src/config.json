@@ -2,5 +2,7 @@
   "initialMap": {
     "center": [46.7, -71.4],
     "zoom": 2
-  }
+  },
+  "contactFormUrl": "https://airtable.com/appi9w1LESftOH4Lq/pagXpHGhPbYXIe6tK/form",
+  "inscriptionFormUrl": "https://airtable.com/appi9w1LESftOH4Lq/pagmssydtpmpwV5hR/form"
 }
