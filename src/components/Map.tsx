@@ -94,7 +94,7 @@ export default function Map() {
           <Marker key={`marker-${id}`} position={[lat, lon]}>
             <Popup>
               <CardHeader className="p-0">
-                <Badge>{actionPublique ? strings.evenementPublique : strings.evenementPrive}</Badge>
+                <Badge variant='secondary'>{actionPublique ? strings.evenementPublique : strings.evenementPrive}</Badge>
                 {eventName && <CardTitle className='font-bold'>{eventName}</CardTitle>}
                 {dateAssemblee && <span className='text-sm text-muted-foreground'>{dateAssemblee}</span>}
               </CardHeader>
