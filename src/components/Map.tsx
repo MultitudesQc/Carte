@@ -4,6 +4,8 @@ import {useState} from "react"
 import { useMap } from 'react-leaflet/hooks'
 import {icon, Icon} from 'leaflet'
 import {MapContainer, TileLayer, Marker, Popup} from 'react-leaflet'
+import MarkerClusterGroup from 'react-leaflet-markercluster'
+import 'react-leaflet-markercluster/styles'
 
 import {CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card"
 import {Badge} from "@/components/ui/badge"
@@ -180,7 +182,9 @@ export default function Map() {
           attribution={`&copy; <a href="https://openstreetmap.org">OpenStreetMap</a><br />${dataDate}`}
         />
         <ViewManager bounds={[[minLat, minLon], [maxLat, maxLon]]} />
-        {placemarks}
+        <MarkerClusterGroup>
+          {placemarks}
+        </MarkerClusterGroup>
       </MapContainer>
     </div>
   );
