@@ -6,11 +6,10 @@ import Image from "next/image"
 const {past, future, type} = legend
 
 export default function Page () {
-  
   return (
     <Table>
       <TableHeader>
-        <TableRow>
+        <TableRow className='border-foreground'>
           <TableHead>{past}</TableHead>
           <TableHead>{future}</TableHead>
           <TableHead>{type}</TableHead>
@@ -18,7 +17,7 @@ export default function Page () {
       </TableHeader>
       <TableBody>
         {Object.entries(iconClassNames).map(([key, value]) => (
-          <TableRow key={key}>
+          <TableRow key={key} className='border-foreground'>
             <TableCell>
               <Image src={iconUrl} alt={`Icône pour ${key}`} width={25} height={41} className={cn(pastEventClassName, value)} />
             </TableCell>

@@ -20,5 +20,6 @@
     "past": "Passé",
     "future": "Futur",
     "type": "Type d'événement"
-  }
+  },
+  "bodyClassName": "bg-[rgb(255,204,249)]"
 }
