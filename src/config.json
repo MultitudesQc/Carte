@@ -4,5 +4,21 @@
     "zoom": 2
   },
   "contactFormUrl": "https://airtable.com/appi9w1LESftOH4Lq/pagXpHGhPbYXIe6tK/form",
-  "inscriptionFormUrl": "https://airtable.com/appi9w1LESftOH4Lq/pagmssydtpmpwV5hR/form"
+  "inscriptionFormUrl": "https://airtable.com/appi9w1LESftOH4Lq/pagmssydtpmpwV5hR/form",
+  "iconUrl": "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+  "iconRetinaUrl": "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
+  "shadowUrl": "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  "pastEventClassName": "opacity-50",
+  "iconClassNames": {
+    "Assemblée de cuisine": "hue-rotate-0",
+    "Discussion-causerie en ligne": "hue-rotate-68",
+    "Déclaration : Solliciter l'appui des candidat-es": "hue-rotate-136",
+    "Guirlande collective": "hue-rotate-204",
+    "Autre chose!": "hue-rotate-272"
+  },
+  "legend": {
+    "past": "Passé",
+    "future": "Futur",
+    "type": "Type d'événement"
+  }
 }

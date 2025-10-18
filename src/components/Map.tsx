@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import dynamic from "next/dynamic";
+import {useState} from "react"
 import { useMap } from 'react-leaflet/hooks'
+import {icon, Icon} from 'leaflet'
+import {MapContainer, TileLayer, Marker, Popup} from 'react-leaflet'
 
 import {CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card"
 import {Badge} from "@/components/ui/badge"
@@ -12,26 +13,42 @@ import {Item, ItemContent, ItemTitle, ItemMedia} from "@/components/ui/item"
 import {MapPinIcon} from '@/components/ui/icons/lucide-map-pin'
 
 import strings from "@/strings.json"
-import {initialMap, contactFormUrl, inscriptionFormUrl} from "@/config.json"
+import {initialMap, contactFormUrl, inscriptionFormUrl, iconUrl, iconRetinaUrl, shadowUrl, pastEventClassName, iconClassNames} from "@/config.json"
+import {cn} from "@/lib/utils"
 
 const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000'
 
-const MapContainer = dynamic(
-  () => import("react-leaflet").then((mod) => mod.MapContainer),
-  { ssr: false }
-);
-const TileLayer = dynamic(
-  () => import("react-leaflet").then((mod) => mod.TileLayer),
-  { ssr: false }
-);
-const Marker = dynamic(
-  () => import("react-leaflet").then((mod) => mod.Marker),
-  { ssr: false }
-);
-const Popup = dynamic(
-  () => import("react-leaflet").then((mod) => mod.Popup),
-  { ssr: false }
-);
+const markerIconOptions = {
+  ...Icon.Default.prototype.options,
+  iconUrl,
+  iconRetinaUrl,
+  shadowUrl
+}
+
+const icons: Record<string, Icon> = {
+  default: icon(markerIconOptions)
+}
+
+Object.entries(iconClassNames).forEach(([key, value]) => {
+  icons[key] = icon({
+    ...markerIconOptions,
+    className: value
+  })
+})
+
+const pastIcons: Record<string, Icon> = {
+  default: icon({
+    ...markerIconOptions,
+    className: pastEventClassName
+  })
+}
+
+Object.entries(iconClassNames).forEach(([key, value]) => {
+  pastIcons[key] = icon({
+    ...markerIconOptions,
+    className: cn(pastEventClassName, value)
+  })
+})
 
 export type MultitudesEvent = {
   id: string
@@ -91,7 +108,7 @@ export default function Map() {
         const eventDate = new Date(dateAssemblee)
         const upcoming = eventDate >= today
         acc.push(
-          <Marker key={`marker-${id}`} position={[lat, lon]}>
+          <Marker key={`marker-${id}`} position={[lat, lon]} icon={upcoming ? icons[eventType] || icons.default : pastIcons[eventType] || pastIcons.default}>
             <Popup>
               <CardHeader className="p-0">
                 <Badge variant='secondary'>{actionPublique ? strings.evenementPublique : strings.evenementPrive}</Badge>
@@ -155,7 +172,6 @@ export default function Map() {
         zoom={initialMap.zoom}
         style={{ height: "100%", width: "100%" }}
         whenReady={async () => {
-          await patchMarkerIcons()
           await fetchMapData()
         }}
       >
@@ -176,18 +192,4 @@ function ViewManager ({ bounds: [[minLat, minLon], [maxLat, maxLon]] }: { bounds
     map.flyToBounds([[minLat, minLon], [maxLat, maxLon]])
   }
   return null
-}
-async function patchMarkerIcons() {
-  const L = await import("leaflet");
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  delete (L.Icon.Default.prototype as any)._getIconUrl;
-  L.Icon.Default.mergeOptions({
-    iconRetinaUrl:
-      "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
-    iconUrl:
-      "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-    shadowUrl:
-      "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-  });
 }
