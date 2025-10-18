@@ -52,12 +52,14 @@ export type MultitudesEvent = {
 }
 
 export default function Map() {
-  const [markers, setMarkers] = useState<MultitudesEvent[]>([]);
+  const [markers, setMarkers] = useState<MultitudesEvent[]>([])
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   async function fetchMapData() {
     const response = await fetch(apiUrl);
-    const {map: {data}} = await response.json();
+    const {map: {data}, updated_at} = await response.json();
     setMarkers(data);
+    setLastUpdated(new Date(updated_at))
   }
 
   let minLat = Infinity
@@ -92,13 +94,13 @@ export default function Map() {
           <Marker key={`marker-${id}`} position={[lat, lon]}>
             <Popup>
               <CardHeader className="p-0">
-                {eventName && <CardTitle className='font-bold'>{eventName}</CardTitle>}
-                {dateAssemblee && <p className='text-sm text-muted-foreground'>{dateAssemblee}</p>}
                 <Badge>{actionPublique ? strings.evenementPublique : strings.evenementPrive}</Badge>
+                {eventName && <CardTitle className='font-bold'>{eventName}</CardTitle>}
+                {dateAssemblee && <span className='text-sm text-muted-foreground'>{dateAssemblee}</span>}
               </CardHeader>
               <CardContent className="p-0">
                 {description && <CardDescription className='text-accent-foreground'>{description}</CardDescription>}
-                {upcoming && <p className='text-sm text-muted-foreground'>{strings.nbPlaces}: {placesRestantes}</p>}
+                {eventType === "Assemblée de cuisine" && upcoming && <p className='text-sm text-muted-foreground'>{strings.nbPlaces}: {placesRestantes}</p>}
                 {municipalite && (
                   <Item>
                     <ItemMedia>
@@ -112,19 +114,27 @@ export default function Map() {
               </CardContent>
               <CardFooter className="p-0">
                 {(lien || billeterie || courrielFourni) && (
-                  <ButtonGroup orientation="vertical">
-                    {lien && <Button asChild className="text-primary-foreground!">
-                      <a href={lien} target="_blank">{strings.lienEvenement}</a>
-                    </Button>}
-                    {billeterie && <Button asChild className="text-primary-foreground!">
-                      <a href={billeterie} target="_blank">{strings.billetterie}</a>
-                    </Button>}
-                    {actionPublique && courrielFourni && <Button asChild className="text-primary-foreground!">
-                      <a href={contactFormUrl} target="_blank">{strings.contact}</a>
-                    </Button>}
-                    {eventType === "Assemblée de cuisine" && upcoming && <Button asChild className="text-primary-foreground!">
-                      <a href={inscriptionFormUrl} target="_blank">{strings.inscription}</a>
-                    </Button>}
+                  <ButtonGroup orientation="vertical" className="w-full">
+                    {lien && (
+                      <Button asChild variant='secondary'>
+                        <a href={lien} target="_blank">{strings.lienEvenement}</a>
+                      </Button>
+                    )}
+                    {billeterie && (
+                      <Button asChild className="text-primary-foreground!">
+                        <a href={billeterie} target="_blank">{strings.billetterie}</a>
+                      </Button>
+                    )}
+                    {actionPublique && courrielFourni && (
+                      <Button asChild className="text-primary-foreground!">
+                        <a href={contactFormUrl} target="_blank">{strings.contact}</a>
+                      </Button>
+                    )}
+                    {eventType === "Assemblée de cuisine" && upcoming && (
+                      <Button asChild className="text-primary-foreground!">
+                        <a href={inscriptionFormUrl} target="_blank">{strings.inscription}</a>
+                      </Button>
+                    )}
                   </ButtonGroup>
                 )}
               </CardFooter>
@@ -135,6 +145,8 @@ export default function Map() {
     }
     return acc
   }, [])
+
+  const dataDate = lastUpdated ? `${strings.lastUpdated}${lastUpdated.toISOString().split('T')[0]}` : ''
 
   return (
     <div style={{height: "100vh", width: "100%"}}>
@@ -149,7 +161,7 @@ export default function Map() {
       >
         <TileLayer
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-          attribution='&copy; <a href="https://openstreetmap.org">OpenStreetMap</a>'
+          attribution={`&copy; <a href="https://openstreetmap.org">OpenStreetMap</a><br />${dataDate}`}
         />
         <ViewManager bounds={[[minLat, minLon], [maxLat, maxLon]]} />
         {placemarks}
