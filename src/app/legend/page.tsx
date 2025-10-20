@@ -8,7 +8,7 @@ const {past, future, type} = legend
 export default function Page () {
   return (
     <>
-      <h3 className="text-center">{legend.title}</h3>
+      <h3 className="text-center text-lg pt-2">{legend.title}</h3>
       <Table>
         <TableHeader>
           <TableRow className='border-foreground'>
