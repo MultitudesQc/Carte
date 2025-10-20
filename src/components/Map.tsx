@@ -110,7 +110,11 @@ export default function Map() {
         const eventDate = new Date(dateAssemblee)
         const upcoming = eventDate >= today
         acc.push(
-          <Marker key={`marker-${id}`} position={[lat, lon]} icon={upcoming ? icons[eventType] || icons.default : pastIcons[eventType] || pastIcons.default}>
+          <Marker
+            key={`marker-${id}`}
+            position={[lat, lon]}
+            icon={upcoming ? icons[eventType] || icons.default : pastIcons[eventType] || pastIcons.default}
+          >
             <Popup>
               <CardHeader className="p-0">
                 <Badge variant='secondary'>{actionPublique ? strings.evenementPublique : strings.evenementPrive}</Badge>

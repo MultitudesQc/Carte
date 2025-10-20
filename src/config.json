@@ -11,12 +11,12 @@
   "pastEventClassName": "opacity-50",
   "iconClassNames": {
     "Assemblée de cuisine": "hue-rotate-0",
-    "Discussion-causerie en ligne": "hue-rotate-68",
     "Déclaration : Solliciter l'appui des candidat-es": "hue-rotate-136",
     "Guirlande collective": "hue-rotate-204",
     "Autre chose!": "hue-rotate-272"
   },
   "legend": {
+    "title": "Légende",
     "past": "Passé",
     "future": "Futur",
     "type": "Type d'événement"
