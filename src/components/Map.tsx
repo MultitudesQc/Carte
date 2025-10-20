@@ -7,7 +7,7 @@ import {MapContainer, TileLayer, Marker, Popup} from 'react-leaflet'
 import MarkerClusterGroup from 'react-leaflet-markercluster'
 import 'react-leaflet-markercluster/styles'
 
-import {CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card"
+import {Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle} from "@/components/ui/card"
 import {Badge} from "@/components/ui/badge"
 import {ButtonGroup} from "@/components/ui/button-group"
 import {Button} from "@/components/ui/button"
@@ -116,51 +116,53 @@ export default function Map() {
             icon={upcoming ? icons[eventType] || icons.default : pastIcons[eventType] || pastIcons.default}
           >
             <Popup>
-              <CardHeader className="p-0">
-                <Badge variant='secondary'>{actionPublique ? strings.evenementPublique : strings.evenementPrive}</Badge>
-                {eventName && <CardTitle className='font-bold'>{eventName}</CardTitle>}
-                {dateAssemblee && <span className='text-sm text-muted-foreground'>{dateAssemblee}</span>}
-              </CardHeader>
-              <CardContent className="p-0">
-                {description && <CardDescription className='text-accent-foreground'>{description}</CardDescription>}
-                {eventType === "Assemblée de cuisine" && upcoming && <p className='text-sm text-muted-foreground'>{strings.nbPlaces}: {placesRestantes}</p>}
-                {municipalite && (
-                  <Item>
-                    <ItemMedia>
-                      <MapPinIcon />
-                    </ItemMedia>
-                    <ItemContent>
-                      <ItemTitle>{municipalite}</ItemTitle>
-                    </ItemContent>
-                  </Item>
-                )}
-              </CardContent>
-              <CardFooter className="p-0">
-                {(lien || billeterie || courrielFourni) && (
-                  <ButtonGroup orientation="vertical" className="w-full">
-                    {lien && (
-                      <Button asChild variant='secondary'>
-                        <a href={lien} target="_blank">{strings.lienEvenement}</a>
-                      </Button>
-                    )}
-                    {billeterie && (
-                      <Button asChild className="text-primary-foreground!">
-                        <a href={billeterie} target="_blank">{strings.billetterie}</a>
-                      </Button>
-                    )}
-                    {actionPublique && courrielFourni && (
-                      <Button asChild className="text-primary-foreground!">
-                        <a href={contactFormUrl} target="_blank">{strings.contact}</a>
-                      </Button>
-                    )}
-                    {eventType === "Assemblée de cuisine" && upcoming && (
-                      <Button asChild className="text-primary-foreground!">
-                        <a href={inscriptionFormUrl} target="_blank">{strings.inscription}</a>
-                      </Button>
-                    )}
-                  </ButtonGroup>
-                )}
-              </CardFooter>
+              <Card className="max-h-[300px] overflow-y-scroll">
+                <CardHeader className="p-0">
+                  <Badge variant='secondary'>{actionPublique ? strings.evenementPublique : strings.evenementPrive}</Badge>
+                  {eventName && <CardTitle className='font-bold'>{eventName}</CardTitle>}
+                  {dateAssemblee && <span className='text-sm text-muted-foreground'>{dateAssemblee}</span>}
+                </CardHeader>
+                <CardContent className="p-0">
+                  {description && <CardDescription className='text-accent-foreground'>{description}</CardDescription>}
+                  {eventType === "Assemblée de cuisine" && upcoming && <p className='text-sm text-muted-foreground'>{strings.nbPlaces}: {placesRestantes}</p>}
+                  {municipalite && (
+                    <Item>
+                      <ItemMedia>
+                        <MapPinIcon />
+                      </ItemMedia>
+                      <ItemContent>
+                        <ItemTitle>{municipalite}</ItemTitle>
+                      </ItemContent>
+                    </Item>
+                  )}
+                </CardContent>
+                <CardFooter className="p-0">
+                  {(lien || billeterie || courrielFourni) && (
+                    <ButtonGroup orientation="vertical" className="w-full">
+                      {lien && (
+                        <Button asChild variant='secondary'>
+                          <a href={lien} target="_blank">{strings.lienEvenement}</a>
+                        </Button>
+                      )}
+                      {billeterie && (
+                        <Button asChild className="text-primary-foreground!">
+                          <a href={billeterie} target="_blank">{strings.billetterie}</a>
+                        </Button>
+                      )}
+                      {actionPublique && courrielFourni && (
+                        <Button asChild className="text-primary-foreground!">
+                          <a href={contactFormUrl} target="_blank">{strings.contact}</a>
+                        </Button>
+                      )}
+                      {eventType === "Assemblée de cuisine" && upcoming && (
+                        <Button asChild className="text-primary-foreground!">
+                          <a href={inscriptionFormUrl} target="_blank">{strings.inscription}</a>
+                        </Button>
+                      )}
+                    </ButtonGroup>
+                  )}
+                </CardFooter>
+              </Card>
             </Popup>
           </Marker>
         )
